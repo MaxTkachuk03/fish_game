@@ -1,4 +1,4 @@
-import 'package:animated_background/animated_background.dart';
+import 'package:fish_game/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_joystick/flutter_joystick.dart';
@@ -28,6 +28,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     _x = MediaQuery.of(context).size.width / 2 - ballSize / 2;
+    _y = MediaQuery.of(context).size.height / 2 - ballSize / 2;
     super.didChangeDependencies();
   }
 
@@ -40,25 +41,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               image: AssetImage("assets/images/background.jpg"),
               fit: BoxFit.cover),
         ),
-        child: AnimatedBackground(
+        child: CustomAnimatedBackground(
           vsync: this,
-          behaviour: RandomParticleBehaviour(
-              options: ParticleOptions(
-            image: Image.asset("assets/images/bubbles.png"),
-            baseColor: Colors.blue,
-            spawnOpacity: 0.5,
-            opacityChangeRate: 0.8,
-            minOpacity: 0.1,
-            maxOpacity: 1.0,
-            spawnMinSpeed: 30.0,
-            spawnMaxSpeed: 80.0,
-            spawnMinRadius: 8.0,
-            spawnMaxRadius: 15.0,
-            particleCount: 100,
-          )),
           child: Stack(
             children: [
-              Ball(_x, _y),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.back_hand),
+              ),
+              Ball(
+                x: _x,
+                y: _y,
+              ),
               Align(
                 alignment: const Alignment(0, 0.9),
                 child: Joystick(
@@ -66,8 +60,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     height: 150,
                     width: 150,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black,
-                      width: 3.0,),
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 3.0,
+                      ),
                       color: Colors.transparent,
                       shape: BoxShape.circle,
                     ),
@@ -77,6 +73,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     setState(() {
                       _x = _x + 20 * details.x;
                       _y = _y + 20 * details.y;
+                      print(_x.toString());
                     });
                   },
                 ),
@@ -89,34 +86,29 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 }
 
-const ballSize = 20.0;
+const ballSize = 200.0;
 
 class Ball extends StatelessWidget {
+  const Ball({
+    Key? key,
+    required this.x,
+    required this.y,
+  }) : super(key: key);
+
   final double x;
   final double y;
-
-  const Ball(this.x, this.y, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
       left: x,
       top: y,
-      child: Container(
+      child: SizedBox(
         width: ballSize,
         height: ballSize,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.redAccent,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              spreadRadius: 2,
-              blurRadius: 3,
-              //offset: Offset(0, 3),
-            )
-          ],
-        ),
+        child: x < this.x
+            ? Image.asset("assets/gifs/fish.gif")
+            : Image.asset("assets/gifs/fish_reversed.gif"),
       ),
     );
   }
