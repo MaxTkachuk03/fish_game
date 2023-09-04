@@ -1,3 +1,4 @@
+import 'package:fish_game/resources/resources.dart';
 import 'package:flutter/cupertino.dart';
 
 const ballSize = 200.0;
@@ -20,9 +21,7 @@ class CustomFish extends StatelessWidget {
       child: SizedBox(
         width: ballSize,
         height: ballSize,
-        child: x < this.x
-            ? Image.asset("assets/gifs/fish.gif")
-            : Image.asset("assets/gifs/fish_reversed.gif"),
+        child: Image.asset(AppPictures.fish)
       ),
     );
   }
